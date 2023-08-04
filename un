@@ -1,0 +1,69 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+// using System;
+using UnityEngine.InputSystem;
+
+public class ball_jump : MonoBehaviour
+{
+    Rigidbody rb;
+    float movementX;
+    float movementY;
+    public float speed = 0;
+     
+    public float jumpForce = 5f;
+    private bool pePamant = true;
+
+    public Transform reinviere;
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+       rb = GetComponent<Rigidbody>(); 
+    }
+
+    //Update is called once per frame
+    void Update()
+    {
+         if (Input.GetKeyUp (KeyCode.Space)  && pePamant==true) 
+        {
+            rb.AddForce(new Vector3(0f, 500f, 0f));
+            pePamant = false;
+        }
+        if (transform.position.y < -10f)
+        {
+            Respawn();
+            
+        }
+        
+    }
+
+    private void OnCollisionEnter(Collision coliziune)
+    {
+        if (coliziune.gameObject.CompareTag("Ground"))
+        {
+            pePamant = true;
+        }
+    }
+
+    private void OnMove(InputValue movementValue)
+    {
+        Vector2 movementVector = movementValue.Get<Vector2>();
+
+        movementX = movementVector.x;
+        movementY = movementVector.y;
+    }
+
+    private void FixedUpdate()
+    {
+        Vector3 movement = new Vector3(movementX, 0.0f, movementY);
+
+        rb.AddForce(movement * speed);
+    }
+    private void Respawn()
+        {
+           //Reset the ball position
+           transform.position = reinviere.position; 
+        } 
+}
